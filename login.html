@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Drizzle Drop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css"> <!-- Assuming you have a separate CSS file for custom styles -->
+  <style>
+    /* Custom CSS to adjust header positioning */
+    #header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000; /* Ensure the header stays on top of other content */
+    }
+
+    /* Additional styles to account for the fixed header */
+    body {
+      padding-top: 70px; /* Adjust this value according to the height of your header */
+    }
+
+    /* Adjust the top margin of the container to prevent it from being covered by the fixed header */
+    .container {
+      margin-top: 100px; /* Adjust this value according to the height of your header */
+    }
+  </style>
+</head>
+
+<body>
+    <header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
+        <nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+              Drizzle Drop
+            </a>
+            <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">
+              <svg class="navbar-icon">
+                <use xlink:href="#navbar-icon"></use>
+              </svg>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
+              <div class="offcanvas-header px-4 pb-0">
+                <a class="navbar-brand" href="index.html">
+                  Drizzle Drop
+                </a>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
+              </div>
+              <div class="offcanvas-body">
+                <ul id="navbar" class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
+                  <li class="nav-item">
+                    <a class="nav-link me-4 active" href="index.html">Home</a>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link me-4 dropdown-toggle link-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Pages</a>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <a href="login.html" class="dropdown-item">Login</a>
+                      </li>
+                      <li>
+                        <a href="signup.html" class="dropdown-item">SignUp</a>
+                      </li>
+                      <li>
+                        <a href="payment.html" class="dropdown-item">Payment</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="nav-item">
+                    <div class="user-items ps-5">
+                      <ul class="d-flex justify-content-end list-unstyled">
+                        <li class="pe-3">
+                          <a href="#">
+                            <svg class="user">
+                              <use xlink:href="#user"></use>
+                            </svg>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </header>  
+  <div class="container" style="margin-top: 100px;">
+    <div class="row justify-content-center mt-10">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">Login</h5>
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+              </div>
+              <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1">
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+              </div>
+              <button type="submit" class="btn btn-primary d-block mx-auto">Login</button> <!-- Centering the button -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Firebase JavaScript SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { getDatabase, ref, orderByChild, equalTo, get, query } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js";
+
+    // Initialize Firebase
+    var firebaseConfig = {
+        apiKey: "AIzaSyAJhEtbZQkD_yyMeCsq5pujl4TudQ5rylw",
+        authDomain: "drizzledrop-5ee1d.firebaseapp.com",
+        databaseURL: "https://drizzledrop-5ee1d-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "drizzledrop-5ee1d",
+        storageBucket: "drizzledrop-5ee1d.appspot.com",
+        messagingSenderId: "589915784838",
+        appId: "1:589915784838:web:6632dc3ab8a913d582f307",
+        measurementId: "G-MEG8XWDJZ5"
+    };
+    const app = initializeApp(firebaseConfig);
+
+    // Reference to the Firebase database
+    const database = getDatabase(app);
+
+    // Form submission event listener
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const email = document.getElementById('exampleInputEmail1').value;
+        const password = document.getElementById('exampleInputPassword1').value;
+        const rememberMe = document.getElementById('exampleCheck1').checked;
+
+        try {
+            const userRef = ref(database, 'users');
+            const userSnapshot = await get(query(userRef, orderByChild('email'), equalTo(email)));
+            if (userSnapshot.exists()) {
+                const userData = userSnapshot.val();
+                const userId = Object.keys(userData)[0]; // Assuming there's only one user matching the email
+                const user = userData[userId];
+
+                if (user.password === password) {
+                    // User authenticated successfully
+                    alert('Login successful!');
+                    // Save user details in local storage
+                    localStorage.setItem('loggedInUser', JSON.stringify(user));
+                    // Clear form fields after successful login
+                    document.getElementById('exampleInputEmail1').value = '';
+                    document.getElementById('exampleInputPassword1').value = '';
+                    document.getElementById('exampleCheck1').checked = false;
+                    window.location.href = 'index.html';
+                } else {
+                    // Incorrect password
+                    alert('Incorrect password. Please try again.');
+                }
+            } else {
+                // User does not exist
+                alert('User does not exist. Please sign up first.');
+            }
+        } catch (error) {
+            console.error('Error checking user:', error);
+            alert('An error occurred while checking user. Please try again later.');
+        }
+    });
+  </script>
+</body>
+</html>
